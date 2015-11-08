@@ -5,10 +5,16 @@
 #include "Arduino.h"
 #include "ultrasonicSensorArray.h"
 #include "ultrasonicSensor.h"
+#include "TimerOne.h"
+
 ultrasonicSensorArray *sensorPointer;
-void ultrasonicSensorArray::staticHandler(){
+void ultrasonicSensorArray::sensorStaticHandler(){
   //Serial.println("ping");
   sensorPointer->ultrasonicISR();
+}
+void ultrasonicSensorArray::timerStaticHandler() {
+	//Serial.println("ping");
+	sensorPointer->pulseNext();
 }
 ultrasonicSensorArray::ultrasonicSensorArray(int inputPin) {
   _echoPin=inputPin;
@@ -17,7 +23,8 @@ ultrasonicSensorArray::ultrasonicSensorArray(int inputPin) {
   sensorPointer = this;
   pinMode(_echoPin, INPUT);
   attachInterrupt(digitalPinToInterrupt(_echoPin),
-	  ultrasonicSensorArray::staticHandler, FALLING);
+	  ultrasonicSensorArray::sensorStaticHandler, FALLING);
+
 }
 
  void ultrasonicSensorArray::addSensor(ultrasonicSensor *newSensor){
@@ -27,22 +34,28 @@ ultrasonicSensorArray::ultrasonicSensorArray(int inputPin) {
  void ultrasonicSensorArray::begin(){
   sensors[0]->pulsePin();
   currentStartTime=micros();
+  Timer1.initialize(20000); 
+  Timer1.attachInterrupt(ultrasonicSensorArray::timerStaticHandler); // attach the service routine here
+
 }
 
 void ultrasonicSensorArray::ultrasonicISR(){	
   currentEndTime=micros();
   sensors[currentSensor]->giveValue(currentEndTime-currentStartTime);
-  currentSensor++;
-  if (currentSensor >= sensorsEntered) {
-	  currentSensor = 0;
-  }
-  delayMicroseconds(100000);
-  sensors[currentSensor]->pulsePin();
+  
+  //delayMicroseconds(100000);
+  //sensors[currentSensor]->pulsePin();
 }
 
 void ultrasonicSensorArray::pulseNext() {
-	currentStartTime = micros();
-	sensors[0]->pulsePin();
+    currentSensor++;
+      if (currentSensor >= sensorsEntered) {
+	    currentSensor = 0;
+      }
+    currentStartTime = micros();
+	//Serial.println(currentSensor);
+
+	sensors[currentSensor]->pulsePin();
 }
 
 

@@ -33,6 +33,7 @@ float ultrasonicSensor::distance() {
   }
   //divide by 5
   sum /= 5;
+  sum = recentTimeDifferences[0];
 
   return sum;
 }

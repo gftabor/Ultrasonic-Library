@@ -11,19 +11,20 @@
 
 class ultrasonicSensorArray {
 public:
-  ultrasonicSensorArray(int echoPin);
-  static void staticHandler();
+  ultrasonicSensorArray(int echoPin);  
   void addSensor(ultrasonicSensor *newSensor);
-  void begin();
-  void ultrasonicISR();
-  void pulseNext();
+  void begin(); 
 
 private:
   int _echoPin;
   volatile int currentSensor;
   int sensorsEntered;  
   volatile unsigned long currentStartTime;
-  volatile unsigned long currentEndTime; 
+  volatile unsigned long currentEndTime;
+  void ultrasonicISR();
+  void pulseNext();
+  static void sensorStaticHandler();
+  static void timerStaticHandler();
 
   
 #ifndef numOfUltrasonics
