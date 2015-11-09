@@ -4,19 +4,19 @@
  */
 
 #include "Arduino.h"
-#include "ultrasonicSensor.h"
+#include "UltrasonicSensor.h"
 
-ultrasonicSensor::ultrasonicSensor(int pingPin) {
+UltrasonicSensor::UltrasonicSensor(int pingPin) {
   pinMode(pingPin, OUTPUT);
   _pingPin = pingPin;
 }
-void ultrasonicSensor::giveValue(unsigned long timeDifference){
+void UltrasonicSensor::giveValue(unsigned long timeDifference){
    for(int i=4; i>0; i--){
        recentTimeDifferences[i]=recentTimeDifferences[i-1];
    }
    recentTimeDifferences[0]=timeDifference;
 }
-void ultrasonicSensor::pulsePin(){
+void UltrasonicSensor::pulsePin(){
 	//Serial.println("pulsing");
 	digitalWrite(_pingPin, LOW);
     digitalWrite(_pingPin, HIGH);
@@ -24,7 +24,7 @@ void ultrasonicSensor::pulsePin(){
     digitalWrite(_pingPin, LOW);
 }
 
-float ultrasonicSensor::distance() {
+float UltrasonicSensor::distance() {
   unsigned long sum = 0;
 
   //Average last 5 samples

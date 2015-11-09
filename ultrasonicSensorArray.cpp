@@ -1,60 +1,50 @@
-/*
-  ultrasonic.cpp - Library for finding the distance to an object in inches.
-  */
-
 #include "Arduino.h"
-#include "ultrasonicSensorArray.h"
-#include "ultrasonicSensor.h"
+#include "UltrasonicSensorArray.h"
+#include "UltrasonicSensor.h"
 #include "TimerOne.h"
 
-ultrasonicSensorArray *sensorPointer;
-void ultrasonicSensorArray::sensorStaticHandler(){
-  //Serial.println("ping");
-  sensorPointer->ultrasonicISR();
+UltrasonicSensorArray *sensorPointer; //global variable containing pointer to sensorArray object that has been created
+void UltrasonicSensorArray::sensorStaticHandler(){
+  sensorPointer->ultrasonicISR();  //handles static function call from echo interupt to ultrasonic ISR
 }
-void ultrasonicSensorArray::timerStaticHandler() {
-	//Serial.println("ping");
-	sensorPointer->pulseNext();
+void UltrasonicSensorArray::timerStaticHandler() {
+	sensorPointer->pulseNext();  //handles static function calls from Timer1 to pulse next ultrasonic sensor
 }
-ultrasonicSensorArray::ultrasonicSensorArray(int inputPin) {
+
+UltrasonicSensorArray::UltrasonicSensorArray(int inputPin) {
   _echoPin=inputPin;
   currentSensor=0;
   sensorsEntered=0;
   sensorPointer = this;
   pinMode(_echoPin, INPUT);
   attachInterrupt(digitalPinToInterrupt(_echoPin),
-	  ultrasonicSensorArray::sensorStaticHandler, FALLING);
+	  UltrasonicSensorArray::sensorStaticHandler, FALLING);//attaches echoPin interupt to ultrasonicIRS's static handler
 
 }
 
- void ultrasonicSensorArray::addSensor(ultrasonicSensor *newSensor){
+ void UltrasonicSensorArray::addSensor(UltrasonicSensor *newSensor){
   sensors[sensorsEntered]= newSensor;
   sensorsEntered++;
 }
- void ultrasonicSensorArray::begin(){
-  sensors[0]->pulsePin();
-  currentStartTime=micros();
-  Timer1.initialize(10000); 
-  Timer1.attachInterrupt(ultrasonicSensorArray::timerStaticHandler); // attach the service routine here
+ void UltrasonicSensorArray::begin(){
+  currentStartTime = micros();
+  sensors[0]->pulsePin();  //pulses first pin
+  Timer1.initialize(10000); //initializes pings to occur every 10ms functioning as both an upper bound on ping length and the frequency of pings
+  Timer1.attachInterrupt(UltrasonicSensorArray::timerStaticHandler); //
 
 }
 
-void ultrasonicSensorArray::ultrasonicISR(){	
+void UltrasonicSensorArray::ultrasonicISR(){	
   currentEndTime=micros();
-  sensors[currentSensor]->giveValue(currentEndTime-currentStartTime);
-  
-  //delayMicroseconds(100000);
-  //sensors[currentSensor]->pulsePin();
+  sensors[currentSensor]->giveValue(currentEndTime-currentStartTime);  
 }
 
-void ultrasonicSensorArray::pulseNext() {
+void UltrasonicSensorArray::pulseNext() {
     currentSensor++;
       if (currentSensor >= sensorsEntered) {
 	    currentSensor = 0;
       }
     currentStartTime = micros();
-	//Serial.println(currentSensor);
-
 	sensors[currentSensor]->pulsePin();
 }
 
