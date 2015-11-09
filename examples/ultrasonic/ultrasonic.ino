@@ -1,58 +1,37 @@
-//library for the VEX ultrasonic sensor
-#include <ultrasonic.h>
+//Mandatory Includes
+#include <TimerOne.h>
+#include <UltrasonicSensor.h>
+#include <UltrasonicSensorArray.h>
+#define numOfUltrasonics 3 // not necessary for less than 5 sensors
 
-//call the ultrasonic constructor
-//ultrasonic(INPUTPIN, OUTPUTPIN)
-ultrasonic ultrasonic(31, 27);
 
+// first, create an Ultrasonic Sensor Array (USA) to receive inputs on pin 2
+UltrasonicSensorArray usa(2);
+// And then create each ultrasonic sensor (with their output pins)
+UltrasonicSensor left(13);
+UltrasonicSensor right(12);
+UltrasonicSensor front(11);
 
 void setup() {
-  //setup serial communication for print statements
+  // setup serial communication for print statements
   Serial.begin(115200);
+  // Add each sensor to the UltrasonicSensorArray
+  usa.addSensor(&left);
+  usa.addSensor(&right);
+  usa.addSensor(&front);
+  // Initalize the USA timer and input interrupts
+  usa.begin();
 }
 
 void loop() {
-  //variable to store the distance
-  float dist = 0;
-
-  //desired distance
-  float desiredDist = 6.5;
-
-  //find the distance to the object
-  //time for the function to return is approximately (ms)
-  //~285 max range
-  //~100 min range
-  dist = ultrasonic.distance();
-
-  //if the distance measured is past 108in (max range) set it to 108
-  //likely want to resample in this case
-  if (dist > 108.0) dist = 108;
-
-  //check to see if the the distance reached within 10% of the desired distance
-  if (dist >= desiredDist * 0.9 && dist <= desiredDist * 1.1) {
-    Serial.println("Target Reached!");
-    Serial.print("Dist: ");
-    Serial.println(dist, DEC);
-
-    //do something
-
-  }
-  //if it's too close
-  else if (dist < desiredDist) {
-    Serial.println("Too Close!");
-    Serial.print("Dist: ");
-    Serial.println(dist, DEC);
-    
-    //do something
-
-  }
-  //otherwise it's too far
-  else{
-    Serial.println("Too far!");
-    Serial.print("Dist: ");
-    Serial.println(dist, DEC);
-    
-    //do something
-
-  }
+  // each sensor is update asynchonously by the UltrasonicSesnorArray
+  // so we don't have to do any work in loop
+  delay(100);
+  // clear the screen
+  for(int j=0; j<11; j++)
+    Serial.println("");
+  // print each distance
+  Serial.println(left.distance());
+  Serial.println(right.distance());
+  Serial.println(front.distance());
 }
