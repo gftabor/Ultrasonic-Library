@@ -17,6 +17,7 @@ public:
 private:
   volatile unsigned long recentTimeDifferences[5];
   int _pingPin;
+  float dist;
 };
 
 #endif

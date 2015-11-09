@@ -34,7 +34,7 @@ ultrasonicSensorArray::ultrasonicSensorArray(int inputPin) {
  void ultrasonicSensorArray::begin(){
   sensors[0]->pulsePin();
   currentStartTime=micros();
-  Timer1.initialize(20000); 
+  Timer1.initialize(10000); 
   Timer1.attachInterrupt(ultrasonicSensorArray::timerStaticHandler); // attach the service routine here
 
 }
