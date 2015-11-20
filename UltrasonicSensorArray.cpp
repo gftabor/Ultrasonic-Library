@@ -29,7 +29,7 @@ UltrasonicSensorArray::UltrasonicSensorArray(int inputPin) {
  void UltrasonicSensorArray::begin(){
   currentStartTime = micros();
   sensors[0]->pulsePin();  //pulses first pin
-  Timer1.initialize(10000); //initializes pings to occur every 10ms functioning as both an upper bound on ping length and the frequency of pings
+  Timer1.initialize(25000); //initializes pings to occur every 10ms functioning as both an upper bound on ping length and the frequency of pings
   Timer1.attachInterrupt(UltrasonicSensorArray::timerStaticHandler); //
 
 }
