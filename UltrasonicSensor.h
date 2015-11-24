@@ -41,7 +41,7 @@ public:
   float distance();
 
 private:
-  volatile unsigned long recentTimeDifferences[5];
+  volatile unsigned long recentTimeDifference;
   int _pingPin;
   float dist;
   int largestSeenValueIndex;
