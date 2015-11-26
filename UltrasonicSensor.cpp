@@ -23,8 +23,7 @@ void UltrasonicSensor::pulsePin(){
 
 float UltrasonicSensor::distance() {
   noInterrupts();
-  recentTimeDifference -= 700;
-  dist = ((562.6 * (recentTimeDifference / 1000000.0)) * 12.0);
+  dist = ((562.6 * ((recentTimeDifference-700) / 1000000.0)) * 12.0);
   //dist = recentTimeDifference; //error testing 
 
   interrupts();
