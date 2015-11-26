@@ -44,8 +44,8 @@ private:
   volatile unsigned long recentTimeDifference;
   int _pingPin;
   float dist;
-  volatile unsigned long secondRecentTimeDifference;
-  volatile unsigned long firstRecentTimeDifference;
+  int largestSeenValueIndex;
+  int smallestSeenValueIndex;
 };
 
 #endif

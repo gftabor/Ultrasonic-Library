@@ -10,9 +10,8 @@ UltrasonicSensor::UltrasonicSensor(int pingPin) {
   pinMode(pingPin, OUTPUT);
   _pingPin = pingPin;
 }
-void UltrasonicSensor::giveValue(unsigned long timeDifference){ 
-    secondRecentTimeDifference = recentTimeDifference;
-	firstRecentTimeDifference =timeDifference;
+void UltrasonicSensor::giveValue(unsigned long timeDifference){   
+   recentTimeDifference=timeDifference;
 }
 void UltrasonicSensor::pulsePin(){
 	//Serial.println("pulsing");
@@ -24,10 +23,6 @@ void UltrasonicSensor::pulsePin(){
 
 float UltrasonicSensor::distance() {
   noInterrupts();
-  if (secondRecentTimeDifference > firstRecentTimeDifference) //uses smaller value from last 2 pings
-	  recentTimeDifference = firstRecentTimeDifference;
-  else
-	  recentTimeDifference = secondRecentTimeDifference;
   recentTimeDifference -= 700;
   dist = ((562.6 * (recentTimeDifference / 1000000.0)) * 12.0);
   //dist = recentTimeDifference; //error testing 
